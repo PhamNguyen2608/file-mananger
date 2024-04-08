@@ -7,7 +7,7 @@ function Home() {
     <Layout>
       <Container className="mt-20">
         <h1 className="text-6xl font-black text-center text-slate-900 mb-6">
-          Learn how to build with React.js!
+        PHẦN MỀM BÁO CÁO CHI HỘI
         </h1>
         <p className="text-xl text-center mb-6">
           Join other developers who are learning how to build websites and
@@ -15,7 +15,7 @@ function Home() {
         </p>
         <p className="text-center">
           <Button href="/contact">
-            Get Started
+            BẮT ĐẦU BÁO CÁO
           </Button>
         </p>
       </Container>
