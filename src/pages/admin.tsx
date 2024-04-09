@@ -104,7 +104,7 @@ const AdminPage: React.FC = () => {
   useEffect(() => {
     const fetchFolders = async () => {
       try {
-        const response = await fetch("http://localhost:3000/api/folders");
+        const response = await fetch("https://bao-cao-ooukqogq3-phamnguyen2608s-projects.vercel.app/api/folders");
         if (!response.ok) throw new Error("Failed to fetch folders");
         const data = await response.json();
         console.log("data: ", data);
@@ -121,7 +121,7 @@ const AdminPage: React.FC = () => {
     setIsLoading(true);
     try {
       const response = await fetch(
-        `http://localhost:3000/api/folders/${encodeURIComponent(folderName)}`
+        `https://bao-cao-ooukqogq3-phamnguyen2608s-projects.vercel.app/api/folders/${encodeURIComponent(folderName)}`
       );
       if (!response.ok) throw new Error("Failed to fetch images");
       const data = await response.json();
