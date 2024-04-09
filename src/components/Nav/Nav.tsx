@@ -22,8 +22,8 @@ const Nav = () => {
         </div>
         <p>
           <Link href="/admin">
-            <a className="text-md font-medium text-slate-900 hover:text-slate-900 drop-shadow-[0_2px_0px_rgba(255,255,255,1)]">
-              Liên hệ
+            <a className="text-md font-medium text-white hover:text-slate-900 drop-shadow-[0_2px_0px_rgba(255,255,255,1)]">
+              Quản trị viên
             </a>
           </Link>
         </p>

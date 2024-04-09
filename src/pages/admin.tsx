@@ -1,16 +1,105 @@
 import AdminLayout from "@/layouts/AdminLayout";
 import React, { useEffect, useState } from "react";
-
+import { useTable } from "react-table";
+import styled from "styled-components";
 interface Image {
+  public_id: string;
+  resource_type: string;
+  created_at: string;
+  folder: string;
   url: string;
-  id: string;
 }
+
+const Styles = styled.div`
+  display: block;
+  overflow-x: auto;
+
+  table {
+    width: 100%;
+    border-spacing: 0;
+    border: 1px solid black;
+
+    tr {
+      :last-child {
+        td {
+          border-bottom: 0;
+        }
+      }
+    }
+
+    th,
+    td {
+      margin: 0;
+      padding: 0.5rem;
+      border-bottom: 1px solid black;
+      border-right: 1px solid black;
+
+      :last-child {
+        border-right: 0;
+      }
+    }
+  }
+`;
 
 const AdminPage: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [images, setImages] = useState<Image[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [folders, setFolders] = useState<{ id: string; name: string }[]>([]);
+
+  const columns = React.useMemo(
+    () => [
+      {
+        Header: "Public ID",
+        accessor: "public_id" as const,
+      },
+      {
+        Header: "Loại tệp tải lên",
+        accessor: "resource_type" as const,
+        Cell: ({ value }: { value: string }) => {
+          let displayText = value;
+          if (value === "image") {
+            displayText = "Ảnh";
+          } else if (value === "raw") {
+            displayText = "Thư mục";
+          }
+          return <span>{displayText}</span>;
+        },
+      },
+
+      {
+        Header: "Ngày nộp",
+        accessor: "created_at" as const,
+        Cell: ({ value }: { value: string }) => {
+          const date = new Date(value);
+          const formattedDate = date.toLocaleString("vi-VN", {
+            year: "numeric",
+            month: "2-digit",
+            day: "2-digit",
+            hour: "2-digit",
+            minute: "2-digit",
+            second: "2-digit",
+            hour12: false,
+          });
+          return <span>{formattedDate}</span>;
+        },
+      },
+      {
+        Header: "Tên chi hội",
+        accessor: "folder" as const,
+      },
+      {
+        Header: "Ảnh hoặc tệp",
+        accessor: "url" as const,
+        Cell: ({ row }: { row: { original: Image } }) => (
+          <a href={row.original.url} target="_blank" rel="noopener noreferrer">
+            {row.original.resource_type === "raw" ? "Xem tệp" : "Xem ảnh"}
+          </a>
+        ),
+      },
+    ],
+    []
+  );
 
   useEffect(() => {
     const fetchFolders = async () => {
@@ -36,6 +125,7 @@ const AdminPage: React.FC = () => {
       );
       if (!response.ok) throw new Error("Failed to fetch images");
       const data = await response.json();
+      console.log("data: ", data);
       setImages(data);
     } catch (error) {
       console.error(error);
@@ -44,6 +134,8 @@ const AdminPage: React.FC = () => {
       setIsLoading(false);
     }
   };
+  const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } =
+    useTable({ columns, data: images });
 
   const handleSearch = () => {
     if (!searchTerm.trim()) return;
@@ -67,12 +159,12 @@ const AdminPage: React.FC = () => {
           >
             Tìm kiếm
           </button>
-          
         </div>
         <div>
-        <select
+          <select
             onChange={(e) => setSearchTerm(e.target.value)}
             className="ml-2 p-2 border bg-white rounded shadow appearance-none focus:outline-none focus:ring-2 focus:ring-blue-500"
+            aria-label="Chọn Chi Hội" 
           >
             <option value="">Chọn Chi Hội</option>
             {folders.map((folder) => (
@@ -82,20 +174,41 @@ const AdminPage: React.FC = () => {
             ))}
           </select>
         </div>
-        <div>
+        <div className="p-4">
           {isLoading ? (
-            <p>Đang tìm kiếm...</p>
+            <div>Đang tìm kiếm chi hội...</div>
           ) : (
-            <div className="grid grid-cols-3 gap-4">
-              {images.map((image) => (
-                <img
-                  key={image.id}
-                  src={image.url}
-                  alt="Chi Hội"
-                  className="w-full h-auto"
-                />
-              ))}
-            </div>
+            <Styles>
+              <table {...getTableProps()} style={{ margin: "20px" }}>
+                <thead>
+                  {headerGroups.map((headerGroup) => (
+                    <tr {...headerGroup.getHeaderGroupProps()}>
+                      {headerGroup.headers.map((column) => (
+                        <th {...column.getHeaderProps()}>
+                          {column.render("Header")}
+                        </th>
+                      ))}
+                    </tr>
+                  ))}
+                </thead>
+                <tbody {...getTableBodyProps()}>
+                  {rows.map((row) => {
+                    prepareRow(row);
+                    return (
+                      <tr {...row.getRowProps()}>
+                        {row.cells.map((cell) => {
+                          return (
+                            <td {...cell.getCellProps()}>
+                              {cell.render("Cell")}
+                            </td>
+                          );
+                        })}
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </Styles>
           )}
         </div>
       </div>

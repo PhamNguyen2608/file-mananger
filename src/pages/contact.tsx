@@ -118,7 +118,7 @@ function Contact() {
           onSubmit={handleOnSubmit}
         >
           <FormRow className="mb-5">
-            <FormLabel htmlFor="staffId">Mã Cán Bộ</FormLabel>
+            <FormLabel htmlFor="staffId">Tên chi hội</FormLabel>
             <InputText id="staffId" name="staffId" type="text" />
           </FormRow>
 
@@ -142,9 +142,9 @@ function Contact() {
             <div {...getRootProps()}>
               <input {...getInputProps()} />
               {isDragActive ? (
-                <p>Kéo thả ảnh hoặc tệp tin vào đây ...</p>
+                <p>Bấm vào đây để tải ảnh hoặc tệp lên</p>
               ) : (
-                <p>Kéo 'n' thả một số tệp vào đây hoặc nhấp để chọn tệp</p>
+                <p>Bấm vào đây để tải ảnh hoặc tệp lên</p>
               )}
             </div>
           </FormRow>
