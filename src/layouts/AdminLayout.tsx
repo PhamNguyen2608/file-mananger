@@ -1,4 +1,3 @@
-import Navbar from '@/components/NavBar';
 import React from 'react';
 import { Link } from 'wouter';
 
